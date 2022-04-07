@@ -2,12 +2,16 @@ import numpy as np
 from vortxl import vortxl
 import matplotlib.pyplot as plt
 
-def tapered_wing(m, n, c0, ct, b):
+def lin_tap(ksi, c0, L):
+    return (1 - (1 - L)*ksi)*c0
+
+def elliptical(ksi, c0):
+    return np.sqrt(1 - (ksi*0.98)**2)*c0
+
+def get_flat_wing(c_fun, m, n, b):
     x = np.zeros((3, (n+1)*(m+1)))
     
-    c = np.zeros(n+1)
-    c[:(n//2)+1] = np.linspace(ct, c0, n//2 + 1)
-    c[n//2:] = np.linspace(c0, ct, n//2 + 1)
+    c = c_fun(np.abs(np.linspace(-1, 1, n+1)))
     
     for i in range(1, n+2):
         for j in range(1, m+2):
@@ -111,3 +115,10 @@ def compute_circulation(x, m, n, U_inf):
                     A[idx_cell_to-1, idx_cell_from-1] = np.dot(normal, ind_velocity)
                     
     return np.linalg.solve(A, B)
+
+def get_gamma_distribution(gamma, m, n):
+    dis = np.zeros(n)
+    for i in range(n):
+        for j in range(m):
+            dis[i] += gamma[j + i*m]
+    return dis
