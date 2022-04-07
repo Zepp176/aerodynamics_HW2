@@ -2,7 +2,7 @@ import numpy as np
 from vortxl import vortxl
 import matplotlib.pyplot as plt
 
-def tapered_wing(n, m, c0, ct, b):
+def tapered_wing(m, n, c0, ct, b):
     x = np.zeros((3, (n+1)*(m+1)))
     
     c = np.zeros(n+1)
@@ -48,7 +48,7 @@ def get_normal_vectors(x, m, n):
             normals[:, j-1+(i-1)*m] = normal_v(points)
     return normals
     
-def ind_vel(x, i, j, n, m, xs, U_inf):
+def ind_vel(x, i, j, m, n, xs, U_inf):
     
     segments = np.zeros((3, 4))
     segments[:, 0] = xs[:, j - 1 + (i-1)*(m+1)]
