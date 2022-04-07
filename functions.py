@@ -58,11 +58,11 @@ def ind_vel(x, i, j, m, n, xs, U_inf):
     
     if j == m:
         # On est dans le cas d'un horseshoe
-        res =  vortxl(x, segments[:,3], segments[:,0])
-        res += vortxl(x, segments[:,0], segments[:,1])
+        res =  vortxl(x, segments[:,2] + U_inf*60, segments[:,2])
         res += vortxl(x, segments[:,2], segments[:,3])
+        res += vortxl(x, segments[:,3], segments[:,0])
+        res += vortxl(x, segments[:,0], segments[:,1])
         res += vortxl(x, segments[:,1], segments[:,1] + U_inf*60)
-        res += vortxl(x, segments[:,2], segments[:,2] + U_inf*60)
         return res
     
     else:
@@ -85,3 +85,29 @@ def draw_wing(x, m, n):
             xs = segments[0, :]
             ys = segments[1, :]
             plt.plot(xs, ys, 'k')
+
+def compute_circulation(x, m, n, U_inf):
+    x_center = get_centers(x, m, n)
+    normals = get_normal_vectors(x, m, n)
+    
+    A = np.zeros((n*m, n*m))
+    B = np.zeros(n*m)
+    
+    for k in range(1, n+1):    # Quel point on considère (le point i)
+        for l in range(1, m+1):
+            
+            idx_cell_to   = l+(k-1)*m
+            
+            normal = normals[:, idx_cell_to-1]
+            B[idx_cell_to-1] = np.dot(normal, U_inf)
+            
+            for i in range(1, n+1):        # Quel point influence (le point j)
+                for j in range(1, m+1):
+                    
+                    idx_cell_from = j+(i-1)*m
+                    
+                    ind_velocity = ind_vel(x_center[:, idx_cell_to-1], i, j, m, n, x, U_inf)
+                    normal = normals[:, idx_cell_to-1]
+                    A[idx_cell_to-1, idx_cell_from-1] = np.dot(normal, ind_velocity)
+                    
+    return np.linalg.solve(A, B)
