@@ -28,5 +28,5 @@ for AR in ARs:
         
         f = open("results/{}_{:.0f}_Gamma.txt".format(AR, L*100), "w")
         for i in range(len(circ)//2, len(circ)):
-            f.write("{} {}\n".format(ksi[i], circ[i]))
+            f.write("{} {}\n".format(ksi[i], circ[i]/(U*alpha*b)))
         f.close()
