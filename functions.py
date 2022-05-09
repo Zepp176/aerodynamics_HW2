@@ -177,8 +177,21 @@ def get_u(xs, mesh, Gamma, m, n, U, alpha):
     
     return u
 
-def get_F(us, mesh, Gamma, m, n, rho):
+def get_F(mesh, Gamma, m, n, rho, U, alpha):
     
-    # TODO !
+    xc, xc2 = get_xc(mesh, m, n)
     
-    return
+    us = get_u(xc, mesh, Gamma, m, n, U, alpha)
+    
+    F = np.zeros(3)
+    
+    for i in range(n):
+        for j in range(m):
+            segment = mesh[:, i*(m+1) + j] - mesh[:, (i+1)*(m+1) + j]
+            F += rho * np.cross(us[:, i*m + j], segment) * Gamma[i*m + j]
+    
+    return F
+
+
+
+
