@@ -3,16 +3,16 @@ from functions import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-n = 50
-m = 4
+n = 40
+m = 5
 
-U = 10
+U = 100
 alpha = np.pi/36
-b = 1
+b = 0.8
 rho = 1.225
 
-AR = 5
-L = 0.5
+AR = 8
+L = 0.2
 c0 = b/AR * 2/(1+L)
 S = b**2/AR
 
@@ -27,10 +27,22 @@ plt.grid()
 plt.axis('equal')
 plt.show()
 
+gamma = compute_circulation(mesh, m, n, U, alpha)
+F = get_F(mesh, gamma, m, n, rho, U, alpha)
+
+L = np.cos(alpha) * F[2] - np.sin(alpha) * F[0]
+D = np.cos(alpha) * F[0] + np.sin(alpha) * F[2]
+
+print(L, D)
+print(F)
+
+
+
+"""
 C_D_arr = []
 C_L_arr = []
 
-for alpha in np.linspace(0, np.pi/180*45, 20):
+for alpha in np.linspace(0, np.pi/180*20, 20):
     
     print(alpha)
     
@@ -39,6 +51,7 @@ for alpha in np.linspace(0, np.pi/180*45, 20):
     ksi = np.linspace(-1, 1, len(circ))
     
     F = get_F(mesh, gamma, m, n, rho, U, alpha)
+    print(F[2])
     
     L = np.cos(alpha) * F[2] - np.sin(alpha) * F[0]
     D = np.cos(alpha) * F[0] + np.sin(alpha) * F[2]
@@ -52,8 +65,7 @@ for alpha in np.linspace(0, np.pi/180*45, 20):
 
 plt.figure(figsize=(7,5))
 plt.grid()
-plt.plot(np.linspace(0, 45, 20), C_L_arr)
-plt.plot(np.linspace(0, 45, 20), C_D_arr)
+plt.plot(np.linspace(0, 90, 20), C_L_arr)
+plt.plot(np.linspace(0, 90, 20), C_D_arr)
 plt.legend(["C_L", "C_D"])
-plt.show()
-
+plt.show()"""

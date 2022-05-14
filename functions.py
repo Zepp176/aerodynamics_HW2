@@ -186,9 +186,15 @@ def get_F(mesh, Gamma, m, n, rho, U, alpha):
     F = np.zeros(3)
     
     for i in range(n):
-        for j in range(m):
+        for j in range(m-1):
             segment = mesh[:, i*(m+1) + j] - mesh[:, (i+1)*(m+1) + j]
             F += rho * np.cross(us[:, i*m + j], segment) * Gamma[i*m + j]
+            
+            segment = mesh[:, (i+1)*(m+1) + j+1] - mesh[:, i*(m+1) + j+1]
+            F += rho * np.cross(us[:, i*m + j+1], segment) * Gamma[i*m + j]
+        
+        segment = mesh[:, i*(m+1) + m-1] - mesh[:, (i+1)*(m+1) + m-1]
+        F += rho * np.cross(us[:, i*m + m-1], segment) * Gamma[i*m + m-1]
     
     return F
 
