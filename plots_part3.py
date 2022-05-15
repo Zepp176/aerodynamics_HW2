@@ -108,7 +108,7 @@ plt.savefig("figures/part3_comparaison_CL_CD.png", dpi=300)
 n = 50
 m = 4
 
-betas = np.linspace(0, np.pi/2, 20)
+betas = np.linspace(0, np.pi/2, 50)
 alphas = np.linspace(0, 10*np.pi/180, 6)[1:]
 k = np.empty(len(betas))
 
@@ -121,7 +121,7 @@ for i in range(len(betas)):
         gamma = compute_circulation(mesh, m, n, U, alpha)
         C_L[j], C_D[j] = get_coefs(get_F(mesh, gamma, m, n, rho, U, alpha), alpha, rho, S, U)
         
-        print(i, j)
+    print(i)
     
     k[i] = np.mean(C_D[1:]/C_L[1:]**2)
 
@@ -132,4 +132,6 @@ plt.plot(betas*180/np.pi, k)
 plt.grid()
 plt.xlabel("$\\beta$ [°]")
 plt.ylabel("k")
-plt.show()
+plt.title("Evolution of the induced drag coefficient $k$ with angle $\\beta$")
+plt.tight_layout()
+plt.savefig("figures/part3_k_vs_beta.png", dpi=300)

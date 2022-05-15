@@ -222,6 +222,27 @@ def get_F(mesh, Gamma, m, n, rho, U, alpha):
     
     return F
 
+def get_l(mesh, Gamma, m, n, b, rho, U, alpha):
+    
+    xc, xc2 = get_xc(mesh, m, n)
+    
+    us = get_u(xc, mesh, Gamma, m, n, U, alpha)
+    
+    f = np.zeros((3, n))
+    
+    for i in range(n):
+        for j in range(m-1):
+            segment = mesh[:, i*(m+1) + j] - mesh[:, (i+1)*(m+1) + j]
+            f[:, i] += rho * np.cross(us[:, i*m + j], segment) * Gamma[i*m + j]
+            
+            segment = mesh[:, (i+1)*(m+1) + j+1] - mesh[:, i*(m+1) + j+1]
+            f[:, i] += rho * np.cross(us[:, i*m + j+1], segment) * Gamma[i*m + j]
+        
+        segment = mesh[:, i*(m+1) + m-1] - mesh[:, (i+1)*(m+1) + m-1]
+        f[:, i] += rho * np.cross(us[:, i*m + m-1], segment) * Gamma[i*m + m-1]
+    
+    return (np.cos(alpha)*f[2,:] - np.sin(alpha)*f[0,:]) / (b/n)
+
 def get_coefs(F, alpha, rho, S, U):
     
     L = np.cos(alpha) * F[2] - np.sin(alpha) * F[0]
