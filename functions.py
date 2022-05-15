@@ -21,6 +21,30 @@ def get_flat_wing(c_fun, m, n, b):
     
     return x
 
+def get_winglets(c_fun, m, n, b, r, beta):
+    x = np.zeros((3, (n+1)*(m+1)))
+    
+    c = c_fun(np.abs(np.linspace(-r, r, n+1)))
+    
+    for i in range(1, n+2):
+        for j in range(1, m+2):
+            if np.abs((-1/2 + (i-1)/n)*b*r) > b/2:
+                d = np.abs((-1/2 + (i-1)/n)*b*r) - b/2
+                x[0, -1 + j + (i-1)*(m+1)] = (-1/4 + (4*j-3)/(4*m))*c[i-1]
+                if (-1/2 + (i-1)/n) > 0:
+                    x[1, -1 + j + (i-1)*(m+1)] = np.cos(beta) * d + b/2
+                else:
+                    x[1, -1 + j + (i-1)*(m+1)] = -np.cos(beta) * d - b/2
+                x[2, -1 + j + (i-1)*(m+1)] = np.sin(beta) * d
+            else:
+                x[0, -1 + j + (i-1)*(m+1)] = (-1/4 + (4*j-3)/(4*m))*c[i-1]
+                x[1, -1 + j + (i-1)*(m+1)] = (-1/2 + (i-1)/n)*b*r
+                x[2, -1 + j + (i-1)*(m+1)] = 0.0
+            
+    
+    
+    return x
+
 def center(points):
     return np.sum(points, axis=1)/4
 
@@ -198,6 +222,38 @@ def get_F(mesh, Gamma, m, n, rho, U, alpha):
     
     return F
 
+def get_coefs(F, alpha, rho, S, U):
+    
+    L = np.cos(alpha) * F[2] - np.sin(alpha) * F[0]
+    D = np.cos(alpha) * F[0] + np.sin(alpha) * F[2]
+    return L/(0.5*rho*U**2*S), D/(0.5*rho*U**2*S)
 
+def set_axes_equal(ax):
+    '''Make axes of 3D plot have equal scale so that spheres appear as spheres,
+    cubes as cubes, etc..  This is one possible solution to Matplotlib's
+    ax.set_aspect('equal') and ax.axis('equal') not working for 3D.
+
+    Input
+      ax: a matplotlib axis, e.g., as output from plt.gca().
+    '''
+
+    x_limits = ax.get_xlim3d()
+    y_limits = ax.get_ylim3d()
+    z_limits = ax.get_zlim3d()
+
+    x_range = abs(x_limits[1] - x_limits[0])
+    x_middle = np.mean(x_limits)
+    y_range = abs(y_limits[1] - y_limits[0])
+    y_middle = np.mean(y_limits)
+    z_range = abs(z_limits[1] - z_limits[0])
+    z_middle = np.mean(z_limits)
+
+    # The plot bounding box is a sphere in the sense of the infinity
+    # norm, hence I call half the max range the plot radius.
+    plot_radius = 0.5*max([x_range, y_range, z_range])
+
+    ax.set_xlim3d([x_middle - plot_radius, x_middle + plot_radius])
+    ax.set_ylim3d([y_middle - plot_radius, y_middle + plot_radius])
+    ax.set_zlim3d([z_middle - plot_radius, z_middle + plot_radius])
 
 
