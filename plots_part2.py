@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # mesh
-n = 100
+n = 50
 m = 10
 
 # airflow
@@ -29,7 +29,7 @@ fig = plt.figure(figsize=(12, 12))
 ax = fig.add_subplot(projection='3d')
 ax.scatter(mesh_winglet[0,:], mesh_winglet[1,:], mesh_winglet[2,:])
 set_axes_equal(ax)
-plt.show()
+plt.savefig("figures/wing_3D.png", dpi=300)
 
 gamma_winglet = compute_circulation(mesh_winglet, m, n, U, alpha)
 circ_winglet = get_gamma_distribution(gamma_winglet, m, n)
